@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -eoux pipefail
+
+# enable rpmfusion
+dnf5 install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+# packages
+dnf -y install \
+    mangohud \
+    gamescope \
+    btop \
+    waydroid
+
+# nbfc-linux official rpm
+dnf5 install -y https://github.com/nbfc-linux/nbfc-linux/releases/download/0.3.19/fedora-nbfc-linux-0.3.19-1.x86_64.rpm
+
+dnf -y copr enable mochaa/android-udev-rules
+
+# copr packages
+dnf -y install \
+    android-udev-rules
+    
+dnf -y copr disable mochaa/android-udev-rules
+
+systemctl enable podman.socket
+
+#### Example for enabling a System Unit File
