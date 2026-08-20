@@ -2,4 +2,4 @@
 
 set -eoux pipefail
 
-pacman -S --noconfirm intel-lpmd
+pacman -Sy --noconfirm intel-lpmd
