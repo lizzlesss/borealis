@@ -7,6 +7,7 @@ pacman -Sy --noconfirm \
     alsa-firmware \
     intel-lpmd \
     scx-scheds \
+    scx-tools \
     sof-firmware \
     tuned \
     tuned-ppd \
