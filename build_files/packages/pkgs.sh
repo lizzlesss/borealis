@@ -4,11 +4,9 @@ set -eoux pipefail
 
 pacman -R --noconfirm power-profiles-daemon
 pacman -Sy --noconfirm \
-    alsa-firmware \
     intel-lpmd \
     scx-scheds \
     scx-tools \
-    sof-firmware \
     tuned \
     tuned-ppd \
     wget
