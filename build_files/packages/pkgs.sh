@@ -2,6 +2,7 @@
 
 set -eoux pipefail
 
+pacman -Syu --noconfirm
 pacman -R --noconfirm power-profiles-daemon
 pacman -Sy --noconfirm \
     intel-lpmd \
