@@ -2,6 +2,10 @@
 
 set -eoux pipefail
 
+dnf remove -y \
+    fish \
+    zsh
+
 # some bullshit to get nbfc working past 44
 dnf install -y --allowerasing \
     lua5.4-libs \
