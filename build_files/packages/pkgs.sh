@@ -16,7 +16,6 @@ dnf config-manager enable \
     terra
 
 dnf install -y \
-    android-tools \
     https://github.com/nbfc-linux/nbfc-linux/releases/download/0.5.4/fedora-44-nbfc-linux-0.5.4-1.x86_64.rpm \
     mangohud \
     scx-scheds \
