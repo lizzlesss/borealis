@@ -20,6 +20,7 @@ dnf install -y \
     mangohud \
     scx-scheds \
     scx-tools \
+    steam \
     testdisk \
     qphotorec \
     waydroid
