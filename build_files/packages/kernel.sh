@@ -24,7 +24,7 @@ dnf5 -y install \
 
 dnf5 -y install \
     /tmp/akmods-rpms/kmods/*xone*.rpm \
-    /tmp/akmods-extra-rpms/kmods/*v4l2loopback*.rpm
+    #/tmp/akmods-extra-rpms/kmods/*v4l2loopback*.rpm
 
 pushd /usr/lib/kernel/install.d
 mv -f 05-rpmostree.install.bak 05-rpmostree.install
