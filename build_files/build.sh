@@ -9,3 +9,5 @@ cp -avf "/ctx/system_files"/. /
 /ctx/packages/pkgs.sh
 
 systemctl enable podman.socket
+systemctl disable avahi-daemon.socket
+systemctl disable avahi-daemon.service
