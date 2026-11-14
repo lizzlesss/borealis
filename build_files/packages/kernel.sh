@@ -1,84 +1,39 @@
-#!/usr/bin/bash
-set -eoux pipefail
+#!/usr/bin/env bash
+set -ouex pipefail
 
-#dnf copr enable -y bieszczaders/kernel-cachyos-addons
+pushd /usr/lib/kernel/install.d
+mv 05-rpmostree.install 05-rpmostree.install.bak
+mv 50-dracut.install 50-dracut.install.bak
+printf '%s\n' '#!/bin/sh' 'exit 0' > 05-rpmostree.install
+printf '%s\n' '#!/bin/sh' 'exit 0' > 50-dracut.install
+chmod +x 05-rpmostree.install 50-dracut.install
+popd
 
-# Adds required package for the scheduler
-#dnf install -y \
-    #--enablerepo="copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons" \
-    #--allowerasing \
-    #libcap-ng libcap-ng-devel bore-sysctl cachyos-ksm-settings procps-ng procps-ng-devel uksmd libbpf scx-scheds-git scx-tools-git scx-manager cachyos-settings ananicy-cpp
+dnf5 -y remove --setopt=protected_packages= \
+    kernel \
+    kernel-core \
+    kernel-modules \
+    kernel-modules-core \
+    kernel-modules-extra \
+    "kmod-*" || true
 
-dnf copr enable -y bieszczaders/kernel-cachyos-lto
+dnf5 -y install \
+    /tmp/kernel-rpms/kernel-[0-9]*.rpm \
+    /tmp/kernel-rpms/kernel-core-*.rpm \
+    /tmp/kernel-rpms/kernel-modules-*.rpm
 
-# Remove useless kernels
-readarray -t OLD_KERNELS < <(rpm -qa 'kernel-*')
-if (( ${#OLD_KERNELS[@]} )); then
-    rpm -e --justdb --nodeps "${OLD_KERNELS[@]}"
-    dnf5 versionlock delete "${OLD_KERNELS[@]}" || true
-    rm -rf /usr/lib/modules/*
-    rm -rf /lib/modules/*
-fi
+dnf5 -y install \
+    /tmp/akmods-rpms/kmods/*xone*.rpm \
+    /tmp/akmods-extra-rpms/kmods/*v4l2loopback*.rpm
 
-# Install kernel packages (noscripts required for 43+)
-dnf install -y \
-    --enablerepo="copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-lto" \
-    --allowerasing \
-    --setopt=tsflags=noscripts \
-    kernel-cachyos-lto \
-    kernel-cachyos-lto-devel-matched \
-    kernel-cachyos-lto-devel \
-    kernel-cachyos-lto-modules \
-    kernel-cachyos-lto-core
+pushd /usr/lib/kernel/install.d
+mv -f 05-rpmostree.install.bak 05-rpmostree.install
+mv -f 50-dracut.install.bak 50-dracut.install
+popd
 
-KERNEL_VERSION="$(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-cachyos-lto)"
+dnf5 versionlock add kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra
 
-# Depmod (required for fedora 43+)
-depmod -a "${KERNEL_VERSION}"
+QUALIFIED_KERNEL="$(rpm -qa | grep -P 'kernel-(|'"${KERNEL_FLAVOR:-ogc}"'-)(\d+\.\d+\.\d+)' | sed -E 's/kernel-(|'"${KERNEL_FLAVOR:-ogc}"'-)//' | head -n 1)"
 
-# Copy vmlinuz
-VMLINUZ_SOURCE="/usr/lib/kernel/vmlinuz-${KERNEL_VERSION}"
-VMLINUZ_TARGET="/usr/lib/modules/${KERNEL_VERSION}/vmlinuz"
-if [[ -f "${VMLINUZ_SOURCE}" ]]; then
-    cp "${VMLINUZ_SOURCE}" "${VMLINUZ_TARGET}"
-fi
-
-# Lock kernel packages
-dnf versionlock add "kernel-cachyos-lto-${KERNEL_VERSION}" || true
-dnf versionlock add "kernel-cachyos-lto-modules-${KERNEL_VERSION}" || true
-
-
-# Thank you @renner03 for this part
-export DRACUT_NO_XATTR=1
-dracut --force \
-  --no-hostonly \
-  --kver "${KERNEL_VERSION}" \
-  --add-drivers "btrfs nvme xfs ext4" \
-  --reproducible -v --add ostree \
-  -f "/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
-
-chmod 0600 "/lib/modules/${KERNEL_VERSION}/initramfs.img"
-depmod -a "${KERNEL_VERSION}"
-
-# Copy vmlinuz
-VMLINUZ_SOURCE="/usr/lib/kernel/vmlinuz-${KERNEL_VERSION}"
-VMLINUZ_TARGET="/usr/lib/modules/${KERNEL_VERSION}/vmlinuz"
-if [[ -f "${VMLINUZ_SOURCE}" ]]; then
-    cp "${VMLINUZ_SOURCE}" "${VMLINUZ_TARGET}"
-fi
-
-# Lock kernel packages
-dnf versionlock add "kernel-cachyos-lto-${KERNEL_VERSION}" || true
-dnf versionlock add "kernel-cachyos-lto-modules-${KERNEL_VERSION}" || true
-
-
-# Thank you @renner03 for this part
-export DRACUT_NO_XATTR=1
-dracut --force \
-  --no-hostonly \
-  --kver "${KERNEL_VERSION}" \
-  --add-drivers "btrfs nvme xfs ext4" \
-  --reproducible -v --add ostree \
-  -f "/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
-
-chmod 0600 "/lib/modules/${KERNEL_VERSION}/initramfs.img"
+/usr/bin/dracut --no-hostonly --kver "${QUALIFIED_KERNEL}" --reproducible -v --add ostree -f "/lib/modules/${QUALIFIED_KERNEL}/initramfs.img"
+chmod 0600 "/lib/modules/${QUALIFIED_KERNEL}/initramfs.img"
