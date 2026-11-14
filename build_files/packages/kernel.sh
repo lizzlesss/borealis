@@ -23,6 +23,7 @@ dnf5 -y install \
     /tmp/kernel-rpms/kernel-modules-*.rpm
 
 dnf5 -y install \
+    /tmp/akmods-rpms/kmods/*ec*.rpm \
     /tmp/akmods-extra-rpms/kmods/*ec*.rpm
 
 pushd /usr/lib/kernel/install.d
