@@ -10,7 +10,7 @@ COPY build_files /
 COPY system_files /system_files
 
 # Base Image
-FROM ghcr.io/ublue-os/aurora-dx:testing
+FROM ghcr.io/ublue-os/aurora:testing
 
 # RUN rm /opt && mkdir /opt
 
