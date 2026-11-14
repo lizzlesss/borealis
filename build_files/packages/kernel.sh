@@ -9,13 +9,13 @@ printf '%s\n' '#!/bin/sh' 'exit 0' > 50-dracut.install
 chmod +x 05-rpmostree.install 50-dracut.install
 popd
 
-dnf5 -y remove --setopt=protected_packages= \
-    kernel \
-    kernel-core \
-    kernel-modules \
-    kernel-modules-core \
-    kernel-modules-extra \
-    "kmod-*" || true
+readarray -t OLD_KERNELS < <(rpm -qa 'kernel-*')
+if (( ${#OLD_KERNELS[@]} )); then
+    rpm -e --justdb --nodeps "${OLD_KERNELS[@]}"
+    dnf5 versionlock delete "${OLD_KERNELS[@]}" || true
+    rm -rf /usr/lib/modules/*
+    rm -rf /lib/modules/*
+fi
 
 dnf5 -y install \
     /tmp/kernel-rpms/kernel-[0-9]*.rpm \
