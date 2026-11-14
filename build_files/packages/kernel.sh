@@ -22,10 +22,6 @@ dnf5 -y install \
     /tmp/kernel-rpms/kernel-core-*.rpm \
     /tmp/kernel-rpms/kernel-modules-*.rpm
 
-dnf5 -y install \
-    /tmp/akmods-rpms/kmods/*ec*.rpm \
-    /tmp/akmods-extra-rpms/kmods/*ec*.rpm
-
 pushd /usr/lib/kernel/install.d
 mv -f 05-rpmostree.install.bak 05-rpmostree.install
 mv -f 50-dracut.install.bak 50-dracut.install
