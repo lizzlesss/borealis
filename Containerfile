@@ -22,7 +22,6 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=bind,from=akmods,source=/rpms,target=/tmp/akmods-rpms \
     --mount=type=bind,from=akmods-extra,source=/rpms,target=/tmp/akmods-extra-rpms \
     /ctx/packages/kernel.sh && \
-    rm -rf /ctx /tmp/* /var/tmp/* && \
     /ctx/build.sh
 
 ### LINTING
