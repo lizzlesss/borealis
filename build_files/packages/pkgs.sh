@@ -19,8 +19,11 @@ dnf install -y \
     https://github.com/nbfc-linux/nbfc-linux/releases/download/0.5.4/fedora-44-nbfc-linux-0.5.4-1.x86_64.rpm \
     mangohud \
     sbsigntools \
-    scx-scheds \
-    scx-tools \
     testdisk \
     qphotorec \
     waydroid
+
+dnf copr enable -y sirlucjan/scx-scheds-cargo
+
+dnf install -y \
+    scx-scheds-git
