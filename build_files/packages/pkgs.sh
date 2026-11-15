@@ -27,3 +27,5 @@ dnf copr enable -y sirlucjan/scx-scheds-cargo
 
 dnf install -y \
     scx-scheds-git
+
+dnf copr disable -y sirlucjan/scx-scheds-cargo
