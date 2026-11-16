@@ -12,15 +12,9 @@ dnf install -y --allowerasing \
     openssl3-devel \
     openssl3-libs
 
-dnf config-manager enable \
-    terra
-
 dnf install -y \
     https://github.com/nbfc-linux/nbfc-linux/releases/download/0.5.4/fedora-44-nbfc-linux-0.5.4-1.x86_64.rpm \
     mangohud \
-    sbsigntools \
-    testdisk \
-    qphotorec \
     waydroid
 
 dnf copr enable -y sirlucjan/scx-scheds-cargo
