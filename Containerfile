@@ -10,7 +10,8 @@ COPY build_files /
 COPY system_files /system_files
 
 # Base Image
-FROM ghcr.io/ublue-os/aurora:kde-nightly-testing
+#FROM ghcr.io/ublue-os/aurora:testing
+FROM ghcr.io/ublue-os/aurora:testing-kde-nightly
 
 # RUN rm /opt && mkdir /opt
 
