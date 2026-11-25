@@ -1,5 +1,5 @@
 ARG FEDORA_VERSION=45
-ARG KERNEL_VERSION=7.3.5-ogc1.1.fc${FEDORA_VERSION}.x86_64
+ARG KERNEL_VERSION=7.3.5-ogc2.1.fc${FEDORA_VERSION}.x86_64
 
 FROM ghcr.io/ublue-os/akmods:ogc-${FEDORA_VERSION}-${KERNEL_VERSION} AS akmods
 FROM ghcr.io/ublue-os/akmods-extra:ogc-${FEDORA_VERSION}-${KERNEL_VERSION} AS akmods-extra
